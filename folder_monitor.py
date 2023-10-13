@@ -101,11 +101,11 @@ def settings_window(systray):
 	wdth=500
 	hght=120
 	window=tk.Tk()
-	window.title("Folder Monitor")
-	window.iconbitmap("folder_monitor.ico")
 	x=window.winfo_screenwidth() // 2 - wdth // 2
 	y=window.winfo_screenheight() // 2 - hght // 2
 	window.geometry(f"{wdth}x{hght}+{int(x)}+{int(y)}")
+	window.title("Folder Monitor")
+	window.iconbitmap("folder_monitor.ico")
 	window.columnconfigure(0, weight=1)
 	window.rowconfigure(0, weight=1)
 	window.rowconfigure(1, weight=1)
@@ -143,11 +143,11 @@ def about_window(systray):
 	wdth=400
 	hght=200
 	window=tk.Tk()
-	window.title("Folder Monitor")
-	window.iconbitmap("folder_monitor.ico")
 	x=window.winfo_screenwidth() // 2 - wdth // 2
 	y=window.winfo_screenheight() // 2 - hght // 2
 	window.geometry(f"{wdth}x{hght}+{int(x)}+{int(y)}")
+	window.title("Folder Monitor")
+	window.iconbitmap("folder_monitor.ico")
 	window.columnconfigure(0, weight=1)
 	window.rowconfigure(0, weight=1)
 	frame1=Frame(window)
@@ -233,6 +233,7 @@ def check_file_copyied(queue):
 	while not stop_event.is_set():
 		is_ready=False
 		path = queue.get()
+		queue_empty.clear()
 		processing_file=True
 		while True:
 			try:
@@ -241,6 +242,7 @@ def check_file_copyied(queue):
 			except:
 				sleep(0.1)
 			if is_ready:
+				print(path)
 				break
 		copied_files.append(path)
 		processing_file=False
@@ -252,20 +254,23 @@ def notify_worker(queue):
 
 	while not stop_event.is_set():
 		if queue_empty.is_set():
-			counter=3
+			print('queue empty')
 			queue_empty.clear()
+			counter=5
 			while counter>0:
 				sleep(1)
 				counter=-1
 				if queue_empty.is_set():
+					print('queue restart')
 					counter=3
 					queue_empty.clear()
-
-			if processing_file:
-				break
+				if processing_file:
+					counter=3
+					print('processing file')
 			message=extract_folder(copied_files)
 			notification_window(message)
 			copied_files=[]
+			queue_empty.clear()
 		sleep(5)
 
 def change_folder(label, button, folder):
