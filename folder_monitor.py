@@ -159,7 +159,7 @@ def about_window(systray):
 
 	about_text=tk.Label(frame1,
 		width=44,
-		text='Folder Monitor v1.0 by Mihai Părpălea\nCredits:\nMircea Constantinescu',
+		text='Folder Monitor',
 		wraplength=360,
 		bg=bg_colour1,
 		fg='black',
